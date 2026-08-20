@@ -4,5 +4,12 @@ rtc:
   port_range_start: 50000
   port_range_end: 50100
   use_external_ip: false
+  # Without this, the server advertises its container-internal IP as the
+  # ICE candidate, which the browser on your host can't reach - only
+  # signaling (ws://localhost:7880) would work, not the actual media
+  # connection. 127.0.0.1 is correct when the browser runs on the same
+  # machine as docker compose; if connecting from another machine, set
+  # this to that machine's LAN/public IP instead.
+  node_ip: 127.0.0.1
 keys:
   devkey: devsecret1234567890devsecret12345
