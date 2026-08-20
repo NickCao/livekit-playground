@@ -22,6 +22,10 @@ services:
       # at wherever you started `vllm-omni serve`, e.g. http://<gpu-host>:8000/v1
       VLLM_OMNI_BASE_URL: ${VLLM_OMNI_BASE_URL:?set VLLM_OMNI_BASE_URL in .env}
       VLLM_OMNI_MODEL: ${VLLM_OMNI_MODEL:?set VLLM_OMNI_MODEL in .env}
+      # Set to 1 to log every raw /v1/realtime event (see livekit-plugins-openai's
+      # realtime_model.py) - useful for seeing exactly what vLLM-Omni does after
+      # a tool call, since that continuation is driven entirely server-side.
+      LK_OPENAI_DEBUG: ${LK_OPENAI_DEBUG:-0}
     depends_on:
       - livekit-server
 

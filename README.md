@@ -80,6 +80,25 @@ Open http://localhost:3000, click connect, and start talking. Ask it
 something like "what's the weather in Boston?" to confirm the
 `lookup_weather` tool call round-trips through vLLM-Omni correctly.
 
+## Troubleshooting: agent goes silent after a tool call
+
+Tool-call continuation is driven entirely by the framework, the same way for
+every realtime backend (OpenAI, Grok, Gemini, ...): once `lookup_weather`
+returns, `livekit-agents` sends the result back as a `function_call_output`
+item, possibly updates `tool_choice`/`tools` on the session, then requests a
+new response. `agent/agent.py` has no special-cased logic here, so if the
+agent stops responding after a tool call, vLLM-Omni's `/v1/realtime` isn't
+completing that continuation correctly.
+
+Set `LK_OPENAI_DEBUG=1` in `.env` (or the `agent` environment) and re-run
+`docker compose up --build` to log every raw `/v1/realtime` event and see
+exactly where it stalls - e.g. whether vLLM-Omni ever acknowledges the
+`function_call_output` item, or emits `response.created`/`response.done` for
+the follow-up. Since full-duplex tool calling is part of vLLM-Omni's
+experimental realtime runtime, a stall here likely needs to be reported/
+tracked upstream at https://github.com/vllm-project/vllm-omni rather than
+fixed in this playground.
+
 ## Files
 
 ```
