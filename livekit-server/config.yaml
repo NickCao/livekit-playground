@@ -5,4 +5,4 @@ rtc:
   port_range_end: 50100
   use_external_ip: false
 keys:
-  devkey: devsecret1234567890
+  devkey: devsecret1234567890devsecret12345

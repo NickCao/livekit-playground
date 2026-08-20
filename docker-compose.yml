@@ -14,7 +14,7 @@ services:
     environment:
       LIVEKIT_URL: ws://livekit-server:7880
       LIVEKIT_API_KEY: devkey
-      LIVEKIT_API_SECRET: devsecret1234567890
+      LIVEKIT_API_SECRET: devsecret1234567890devsecret12345
       # vLLM-Omni runs externally (it needs its own GPU host) - point this
       # at wherever you started `vllm-omni serve`, e.g. http://<gpu-host>:8000/v1
       VLLM_OMNI_BASE_URL: ${VLLM_OMNI_BASE_URL:?set VLLM_OMNI_BASE_URL in .env}
@@ -30,7 +30,7 @@ services:
       # not just from inside the compose network.
       LIVEKIT_URL: ws://localhost:7880
       LIVEKIT_API_KEY: devkey
-      LIVEKIT_API_SECRET: devsecret1234567890
+      LIVEKIT_API_SECRET: devsecret1234567890devsecret12345
     ports:
       - "3000:3000"
     depends_on:

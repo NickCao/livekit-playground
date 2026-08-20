@@ -61,7 +61,7 @@ docker compose up --build
 ```
 
 This starts a local LiveKit server on `ws://localhost:7880` (dev keys
-`devkey` / `devsecret1234567890`), the agent worker, and the frontend on
+`devkey` / `devsecret1234567890devsecret12345`), the agent worker, and the frontend on
 http://localhost:3000.
 
 ## 4. Talk to it
