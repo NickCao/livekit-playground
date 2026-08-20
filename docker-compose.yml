@@ -1,0 +1,23 @@
+services:
+  livekit-server:
+    image: livekit/livekit-server:latest
+    command: --config /etc/livekit.yaml
+    volumes:
+      - ./livekit-server/config.yaml:/etc/livekit.yaml:ro
+    ports:
+      - "7880:7880"
+      - "7881:7881"
+      - "50000-50100:50000-50100/udp"
+
+  agent:
+    build: ./agent
+    environment:
+      LIVEKIT_URL: ws://livekit-server:7880
+      LIVEKIT_API_KEY: devkey
+      LIVEKIT_API_SECRET: devsecret1234567890
+      # vLLM-Omni runs externally (it needs its own GPU host) - point this
+      # at wherever you started `vllm-omni serve`, e.g. http://<gpu-host>:8000/v1
+      VLLM_OMNI_BASE_URL: ${VLLM_OMNI_BASE_URL:?set VLLM_OMNI_BASE_URL in .env}
+      VLLM_OMNI_MODEL: ${VLLM_OMNI_MODEL:?set VLLM_OMNI_MODEL in .env}
+    depends_on:
+      - livekit-server
