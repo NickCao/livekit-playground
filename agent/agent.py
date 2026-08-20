@@ -9,11 +9,12 @@ from livekit.agents import (
     AgentSession,
     JobContext,
     RunContext,
+    TurnHandlingOptions,
     cli,
     room_io,
 )
 from livekit.agents.llm import function_tool
-from livekit.plugins import openai
+from livekit.plugins import openai, silero
 
 logger = logging.getLogger("vllm-omni-agent")
 
@@ -70,11 +71,17 @@ async def entrypoint(ctx: JobContext) -> None:
     }
 
     session = AgentSession(
+        # vLLM-Omni's /v1/realtime endpoint doesn't support server-side VAD /
+        # turn detection, so leave turn_detection unset on the model (which
+        # lets the framework disable it) and drive turn-taking locally with
+        # Silero VAD instead.
         llm=openai.realtime.RealtimeModel(
             base_url=VLLM_OMNI_BASE_URL,
             api_key=VLLM_OMNI_API_KEY,
             model=VLLM_OMNI_MODEL,
         ),
+        vad=silero.VAD.load(),
+        turn_handling=TurnHandlingOptions(turn_detection="vad"),
     )
 
     await session.start(

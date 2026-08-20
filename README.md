@@ -12,6 +12,11 @@ plugin code required. The agent (`agent/agent.py`) is a trimmed-down version of
 and includes a `lookup_weather` [function tool](https://github.com/livekit/agents/blob/main/examples/voice_agents/basic_agent.py)
 so you can confirm tool calling works through vLLM-Omni.
 
+vLLM-Omni's `/v1/realtime` endpoint doesn't support server-side VAD/turn
+detection, so the model's own `turn_detection` is left unset (which lets
+LiveKit Agents disable it) and a local Silero VAD drives turn-taking instead,
+via `turn_handling=TurnHandlingOptions(turn_detection="vad")`.
+
 ## Architecture
 
 - `livekit-server` - self-hosted LiveKit server (dev keys, local only).
