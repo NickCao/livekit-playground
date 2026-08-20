@@ -64,6 +64,11 @@ This starts a local LiveKit server on `ws://localhost:7880` (dev keys
 `devkey` / `devsecret1234567890devsecret12345`), the agent worker, and the frontend on
 http://localhost:3000.
 
+> `livekit-server/config.yaml` sets `rtc.node_ip: 127.0.0.1`, which assumes
+> your browser runs on the same machine as `docker compose`. If you're
+> connecting from another machine, change it to that host's LAN/public IP
+> or you'll see "could not establish pc connection" in the browser.
+
 ## 4. Talk to it
 
 Open http://localhost:3000, click connect, and start talking. Ask it
