@@ -22,6 +22,9 @@ via `turn_handling=TurnHandlingOptions(turn_detection="vad")`.
 - `livekit-server` - self-hosted LiveKit server (dev keys, local only).
 - `agent` - a LiveKit Agents worker that joins rooms and talks to vLLM-Omni
   over `/v1/realtime`.
+- `frontend` - [livekit-examples/agent-starter-react](https://github.com/livekit-examples/agent-starter-react),
+  the official LiveKit Agents web frontend, built from source and run in dev
+  mode (no frontend code lives in this repo).
 - **vLLM-Omni itself is *not* part of this stack.** It needs its own GPU host,
   so run it separately (see below) and point this stack at it.
 
@@ -58,32 +61,23 @@ docker compose up --build
 ```
 
 This starts a local LiveKit server on `ws://localhost:7880` (dev keys
-`devkey` / `devsecret1234567890`) and the agent worker, which will pick up
-jobs for any room created on that server.
+`devkey` / `devsecret1234567890`), the agent worker, and the frontend on
+http://localhost:3000.
 
 ## 4. Talk to it
 
-Connect with any LiveKit frontend pointed at `ws://localhost:7880` with the
-dev keys above - e.g. the [Agents Playground](https://agents-playground.livekit.io/)
-(manual server connect) or [agent-starter-react](https://github.com/livekit-examples/agent-starter-react).
-Generate a join token with the [`lk` CLI](https://github.com/livekit/livekit-cli):
-
-```bash
-lk token create \
-  --api-key devkey --api-secret devsecret1234567890 \
-  --join --room playground --identity tester --valid-for 24h
-```
-
-Ask it something like "what's the weather in Boston?" to confirm the
+Open http://localhost:3000, click connect, and start talking. Ask it
+something like "what's the weather in Boston?" to confirm the
 `lookup_weather` tool call round-trips through vLLM-Omni correctly.
 
 ## Files
 
 ```
-docker-compose.yml       # livekit-server + agent
+docker-compose.yml       # livekit-server + agent + frontend
 livekit-server/config.yaml
 agent/agent.py           # RealtimeModel(base_url=vLLM-Omni) + one function_tool
 agent/Dockerfile
 agent/pyproject.toml
+frontend/Dockerfile      # builds livekit-examples/agent-starter-react from source
 .env.example
 ```

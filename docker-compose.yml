@@ -21,3 +21,17 @@ services:
       VLLM_OMNI_MODEL: ${VLLM_OMNI_MODEL:?set VLLM_OMNI_MODEL in .env}
     depends_on:
       - livekit-server
+
+  frontend:
+    build: ./frontend
+    environment:
+      # This is handed to the browser as-is (see agent-starter-react's
+      # app/api/token route), so it must be reachable from your machine,
+      # not just from inside the compose network.
+      LIVEKIT_URL: ws://localhost:7880
+      LIVEKIT_API_KEY: devkey
+      LIVEKIT_API_SECRET: devsecret1234567890
+    ports:
+      - "3000:3000"
+    depends_on:
+      - livekit-server
