@@ -94,7 +94,9 @@ async def entrypoint(ctx: JobContext) -> None:
     await session.start(
         agent=Assistant(),
         room=ctx.room,
-        room_options=room_io.RoomOptions(),
+        room_options=room_io.RoomOptions(
+            text_output=False,
+        ),
     )
 
 
