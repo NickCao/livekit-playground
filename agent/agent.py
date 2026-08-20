@@ -79,6 +79,7 @@ async def entrypoint(ctx: JobContext) -> None:
             base_url=VLLM_OMNI_BASE_URL,
             api_key=VLLM_OMNI_API_KEY,
             model=VLLM_OMNI_MODEL,
+            input_audio_transcription=False,
         ),
         vad=silero.VAD.load(),
         # explicit "vad" for both: with no STT configured, the framework would
@@ -94,9 +95,7 @@ async def entrypoint(ctx: JobContext) -> None:
     await session.start(
         agent=Assistant(),
         room=ctx.room,
-        room_options=room_io.RoomOptions(
-            text_output=False,
-        ),
+        room_options=room_io.RoomOptions(),
     )
 
 
