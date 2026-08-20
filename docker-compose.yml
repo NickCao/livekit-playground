@@ -1,18 +1,21 @@
 services:
+  # network_mode: host lets livekit-server bind its UDP media port range
+  # directly, instead of relying on Docker's per-port NAT for a 100+ port
+  # UDP range - the latter is what causes "ICE failed" even when signaling
+  # (the WebSocket) connects fine. Requires Linux; on macOS/Windows you'd
+  # need a different approach (e.g. a real node_ip + explicit port mapping).
   livekit-server:
     image: livekit/livekit-server:latest
+    network_mode: host
     command: --config /etc/livekit.yaml
     volumes:
       - ./livekit-server/config.yaml:/etc/livekit.yaml:ro
-    ports:
-      - "7880:7880"
-      - "7881:7881"
-      - "50000-50100:50000-50100/udp"
 
   agent:
     build: ./agent
+    network_mode: host
     environment:
-      LIVEKIT_URL: ws://livekit-server:7880
+      LIVEKIT_URL: ws://127.0.0.1:7880
       LIVEKIT_API_KEY: devkey
       LIVEKIT_API_SECRET: devsecret1234567890devsecret12345
       # vLLM-Omni runs externally (it needs its own GPU host) - point this
@@ -24,14 +27,12 @@ services:
 
   frontend:
     build: ./frontend
+    network_mode: host
     environment:
       # This is handed to the browser as-is (see agent-starter-react's
-      # app/api/token route), so it must be reachable from your machine,
-      # not just from inside the compose network.
-      LIVEKIT_URL: ws://localhost:7880
+      # app/api/token route), so it must be reachable from your machine.
+      LIVEKIT_URL: ws://127.0.0.1:7880
       LIVEKIT_API_KEY: devkey
       LIVEKIT_API_SECRET: devsecret1234567890devsecret12345
-    ports:
-      - "3000:3000"
     depends_on:
       - livekit-server

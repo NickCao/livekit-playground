@@ -28,6 +28,11 @@ via `turn_handling=TurnHandlingOptions(turn_detection="vad")`.
 - **vLLM-Omni itself is *not* part of this stack.** It needs its own GPU host,
   so run it separately (see below) and point this stack at it.
 
+All three services run with `network_mode: host` (Linux only) so
+`livekit-server` can bind its UDP media port range directly - Docker's
+per-port NAT for a 100+ port UDP range is what causes WebRTC's "ICE failed"
+even when the signaling WebSocket connects fine.
+
 ## 1. Start vLLM-Omni externally
 
 On a GPU host, following the current instructions for your chosen model at
