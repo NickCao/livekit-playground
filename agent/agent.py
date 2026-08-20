@@ -81,7 +81,14 @@ async def entrypoint(ctx: JobContext) -> None:
             model=VLLM_OMNI_MODEL,
         ),
         vad=silero.VAD.load(),
-        turn_handling=TurnHandlingOptions(turn_detection="vad"),
+        # explicit "vad" for both: with no STT configured, the framework would
+        # likely auto-select vad-based interruption anyway, but the model
+        # supporting neither server-side turn detection nor barge-in is worth
+        # being explicit about rather than relying on auto-detection for.
+        turn_handling=TurnHandlingOptions(
+            turn_detection="vad",
+            interruption={"mode": "vad"},
+        ),
     )
 
     await session.start(

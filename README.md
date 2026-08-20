@@ -99,6 +99,17 @@ experimental realtime runtime, a stall here likely needs to be reported/
 tracked upstream at https://github.com/vllm-project/vllm-omni rather than
 fixed in this playground.
 
+## Troubleshooting: can't interrupt the agent
+
+Barge-in works like this: local Silero VAD (`turn_handling=TurnHandlingOptions(
+interruption={"mode": "vad"})`) detects you start speaking while the agent is
+talking, and the framework then sends `conversation.item.truncate` and
+`response.cancel` over `/v1/realtime` to stop the in-flight generation. If
+those aren't handled correctly server-side, the agent's audio may keep
+playing or the session may get stuck afterwards - the same class of problem
+as the tool-call stall above. Use `LK_OPENAI_DEBUG=1` the same way to check
+whether vLLM-Omni acknowledges `response.cancel` when you talk over it.
+
 ## Files
 
 ```
